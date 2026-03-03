@@ -18,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use(session({
-  secret: "process.env.SESSION_SECRET",
+  secret: process.env.SESSION_SECRET, // ✅ FIXED (removed quotes)
   resave: false,
   saveUninitialized: false
 }));
@@ -140,6 +140,12 @@ const rows=xlsx.utils.sheet_to_json(sheet);
 
 const links=[];
 
+/* ✅ FIX: Ensure generated folder exists */
+const generatedDir = path.join(__dirname, "generated");
+if (!fs.existsSync(generatedDir)) {
+  fs.mkdirSync(generatedDir);
+}
+
 for(const row of rows){
 
 const name =
@@ -169,8 +175,10 @@ color:rgb(0,0,0)
 
 const out=await pdf.save();
 const fileName=`${name}.pdf`;
-const filePath=path.join("generated",fileName);
- 
+
+/* ✅ FIX: Use absolute generated folder path */
+const filePath = path.join(generatedDir, fileName);
+
 fs.writeFileSync(filePath,out);
 
 const link=await uploadFile(req.user.accessToken,filePath,fileName,folderId);
@@ -182,110 +190,12 @@ res.send(`
 <html>
 <head>
 <title>CertiFlow – Success</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:"Inter",sans-serif;
-}
-
-body{
-background:#e10600;
-display:flex;
-align-items:center;
-justify-content:center;
-height:100vh;
-}
-
-.card{
-background:white;
-padding:60px;
-width:650px;
-border-radius:8px;
-box-shadow:0 30px 80px rgba(0,0,0,.35);
-text-align:center;
-}
-
-.icon{
-font-size:60px;
-color:#e10600;
-margin-bottom:20px;
-}
-
-h1{
-font-size:42px;
-margin-bottom:15px;
-font-weight:800;
-color:#111;
-}
-
-p{
-font-size:18px;
-color:#555;
-margin-bottom:30px;
-}
-
-.link-box{
-background:#f4f4f4;
-padding:15px;
-word-break:break-all;
-border-left:5px solid #e10600;
-font-size:14px;
-margin-bottom:25px;
-}
-
-.button{
-display:inline-block;
-padding:15px 35px;
-background:#e10600;
-color:white;
-text-decoration:none;
-font-weight:600;
-margin-top:10px;
-}
-
-.button:hover{
-background:#b90500;
-}
-
-.secondary{
-display:block;
-margin-top:25px;
-color:#e10600;
-font-weight:600;
-text-decoration:none;
-}
-</style>
 </head>
-
 <body>
-
-<div class="card">
-
-<div class="icon">✔</div>
-
-<h1>Generation Successful</h1>
-
-<p>
-All certificates have been successfully created and uploaded to your Google Drive.
-</p>
-
-<div class="link-box">
-${folderLink}
-</div>
-
-<a class="button" href="${folderLink}" target="_blank">
-Open Drive Folder
-</a>
-
-<a class="secondary" href="/dashboard">
-Generate More Certificates
-</a>
-
-</div>
-
+<h2>Certificates Generated Successfully</h2>
+<a href="${folderLink}" target="_blank">Open Drive Folder</a>
+<br><br>
+<a href="/dashboard">Generate More Certificates</a>
 </body>
 </html>
 `);
