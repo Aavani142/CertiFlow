@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CertiFlow Pro Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Inter",sans-serif;}
+
+body{
+background:#111;
+color:white;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:40px;
+}
+
+.container{
+background:white;
+color:black;
+width:700px;
+padding:40px;
+box-shadow:0 20px 50px rgba(0,0,0,.4);
+}
+
+h1{
+font-size:36px;
+margin-bottom:10px;
+}
+
+.section{
+margin-top:25px;
+}
+
+label{
+font-weight:600;
+display:block;
+margin-bottom:8px;
+}
+
+input, select{
+width:100%;
+padding:10px;
+margin-bottom:10px;
+border:1px solid #ddd;
+}
+
+.drop-zone{
+border:2px dashed #ccc;
+padding:20px;
+text-align:center;
+cursor:pointer;
+margin-bottom:15px;
+}
+
+.drop-zone.dragover{
+border-color:#e10600;
+background:#ffeaea;
+}
+
+button{
+width:100%;
+padding:14px;
+background:#e10600;
+color:white;
+border:none;
+font-size:16px;
+margin-top:20px;
+cursor:pointer;
+}
+
+button:hover{
+background:#b90500;
+}
+
+.progress{
+height:10px;
+background:#ddd;
+margin-top:15px;
+display:none;
+}
+
+.progress-bar{
+height:100%;
+width:0%;
+background:#e10600;
+}
+
+.loading{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.7);
+color:white;
+align-items:center;
+justify-content:center;
+font-size:24px;
+}
+
+
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>CertiFlow Pro</h1>
+
+<div class="section">
+<label>Event / Folder Name</label>
+<input type="text" id="eventName" placeholder="GDG Certificates">
+</div>
+
+<div class="section">
+<label>Excel File (.xlsx)</label>
+<div class="drop-zone" id="excelDrop">Drag Excel here or click</div>
+<input type="file" id="excelFile" hidden>
+</div>
+
+<div class="section">
+<label>Template PDF</label>
+<div class="drop-zone" id="templateDrop">Drag PDF here or click</div>
+<input type="file" id="templateFile" hidden>
+</div>
+
+<div class="section">
+<label>X Position</label>
+<input type="number" id="xPos" value="250">
+
+<label>Y Position</label>
+<input type="number" id="yPos" value="300">
+
+<label>Font Size</label>
+<input type="number" id="fontSize" value="30">
+
+<label>Font Style</label>
+<select id="fontStyle">
+<option value="normal">Normal</option>
+<option value="bold">Bold</option>
+</select>
+
+<label>
+<input type="checkbox" id="autoCenter"> Auto Center Name
+</label>
+</div>
+
+<button onclick="generate()">Generate Certificates</button>
+
+<div class="progress">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+
+
+</div>
+
+<div class="loading" id="loadingScreen">
+Generating Certificates...
+</div>
+
+<script>
+
+let excelFile, templateFile;
+
+function setupDrop(zoneId, inputId){
+const zone = document.getElementById(zoneId);
+const input = document.getElementById(inputId);
+
+zone.onclick = ()=> input.click();
+
+input.onchange = e=>{
+if(zoneId==="excelDrop") excelFile = e.target.files[0];
+if(zoneId==="templateDrop") templateFile = e.target.files[0];
+zone.innerText = e.target.files[0].name;
+};
+
+zone.ondragover = e=>{
+e.preventDefault();
+zone.classList.add("dragover");
+};
+
+zone.ondragleave = ()=> zone.classList.remove("dragover");
+
+zone.ondrop = e=>{
+e.preventDefault();
+zone.classList.remove("dragover");
+input.files = e.dataTransfer.files;
+input.onchange({target:input});
+};
+}
+
+setupDrop("excelDrop","excelFile");
+setupDrop("templateDrop","templateFile");
+
+async function generate(){
+
+if(!excelFile || !templateFile){
+alert("Upload both files");
+return;
+}
+
+document.getElementById("loadingScreen").style.display="flex";
+
+const formData = new FormData();
+formData.append("eventName",document.getElementById("eventName").value);
+formData.append("excelFile",excelFile);
+formData.append("templateFile",templateFile);
+formData.append("xPos",document.getElementById("xPos").value);
+formData.append("yPos",document.getElementById("yPos").value);
+formData.append("fontSize",document.getElementById("fontSize").value);
+formData.append("fontStyle",document.getElementById("fontStyle").value);
+formData.append("autoCenter",document.getElementById("autoCenter").checked);
+
+const response = await fetch("/generate-certificates",{
+method:"POST",
+body:formData
+});
+
+const result = await response.text();
+
+document.getElementById("loadingScreen").style.display="none";
+
+document.body.innerHTML = result;
+}
+
+</script>
+
+</body>
+</html>

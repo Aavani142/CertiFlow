@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CertiFlow – Success</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:"Inter",sans-serif;
+}
+
+body{
+background:#e10600;
+display:flex;
+align-items:center;
+justify-content:center;
+height:100vh;
+}
+
+.card{
+background:white;
+padding:60px;
+width:650px;
+border-radius:8px;
+box-shadow:0 30px 80px rgba(0,0,0,.35);
+text-align:center;
+}
+
+.icon{
+font-size:60px;
+color:#e10600;
+margin-bottom:20px;
+}
+
+h1{
+font-size:42px;
+margin-bottom:15px;
+font-weight:800;
+color:#111;
+}
+
+p{
+font-size:18px;
+color:#555;
+margin-bottom:25px;
+}
+
+.link-box{
+background:#f4f4f4;
+padding:15px;
+word-break:break-all;
+border-left:5px solid #e10600;
+font-size:14px;
+margin-bottom:25px;
+}
+
+.button{
+display:inline-block;
+padding:15px 35px;
+background:#e10600;
+color:white;
+text-decoration:none;
+font-weight:600;
+margin-top:10px;
+}
+
+.button:hover{
+background:#b90500;
+}
+
+.secondary{
+display:block;
+margin-top:25px;
+color:#e10600;
+font-weight:600;
+text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="icon">✔</div>
+
+<h1>Generation Successful</h1>
+
+<p>All certificates have been uploaded to your Google Drive.</p>
+
+<div class="link-box" id="folderLink">
+Loading folder link...
+</div>
+
+<a class="button" id="openFolder" target="_blank">
+Open Drive Folder
+</a>
+
+<a class="secondary" href="/dashboard">
+Generate More Certificates
+</a>
+
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const link = params.get("folder");
+
+if(link){
+document.getElementById("folderLink").innerText = link;
+document.getElementById("openFolder").href = link;
+}
+</script>
+
+</body>
+</html>
