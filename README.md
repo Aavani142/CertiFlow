@@ -4,6 +4,8 @@ CertiFlow is a web application that automatically generates certificates from an
 
 It is designed for events, workshops, hackathons, and conferences where organizers need to generate multiple certificates quickly.
 
+##Live
+https://certiflow-f7ni.onrender.com/
 ---
 
 Features
@@ -51,6 +53,18 @@ How It Works
 6. A folder link is provided for easy access.
 
 ---
+## Screenshots
+
+<img width="1909" height="917" alt="image" src="https://github.com/user-attachments/assets/99d70fd7-8da5-43ed-838a-ee7689bd70dd" />
+<img width="1905" height="903" alt="image" src="https://github.com/user-attachments/assets/904343f3-7227-4623-bbeb-01fca1cbfcfa" />
+<img width="897" height="820" alt="image" src="https://github.com/user-attachments/assets/f3f4f5ad-0cf2-412c-88c5-968121b68e90" />
+<img width="888" height="395" alt="image" src="https://github.com/user-attachments/assets/6ab6f98f-00e5-4526-a89c-6f5319ec2d31" />
+<img width="886" height="724" alt="image" src="https://github.com/user-attachments/assets/94ac84a7-0c4e-44e8-bd2d-0f7e2bf06f5a" />
+
+
+
+
+
 
 Installation
 
@@ -77,25 +91,6 @@ node server.js
 Open in browser
 
 http://localhost:5000
-
----
-
-Project Structure
-
-CertiFlow
-│
-├── public
-│   ├── index.html
-│   ├── dashboard.html
-│   ├── connect.html
-│   └── success.html
-│
-├── services
-│   └── googleDrive.js
-│
-├── server.js
-├── package.json
-└── .env
 
 ---
 
